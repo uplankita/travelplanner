@@ -7,7 +7,7 @@ let openai: OpenAI | undefined
 let anthropic: Anthropic | undefined
 
 // Hugging Face API for development
-async function generateWithHuggingFace(prompt: string): Promise<string> {
+async function generateWithHuggingFace(prompt: string, days: number): Promise<string> {
   const response = await fetch(
     "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
     {
@@ -25,8 +25,10 @@ Rules:
 1. Response must be ONLY valid JSON, no additional text
 2. Use single quotes for text to avoid escaping issues
 3. Keep descriptions simple without special characters
-4. Include exactly 3 activities
+4. Include ${days * 2} activities (2 activities per day)
 5. Use realistic costs and coordinates
+6. Spread activities evenly across the days
+7. Total cost should be within budget
 
 Format:
 {
@@ -36,6 +38,7 @@ Format:
       'description': 'Simple description without special characters',
       'cost': 50,
       'duration': 120,
+      'day': 1,
       'location': {
         'name': 'Location Name',
         'latitude': 48.8584,
@@ -46,7 +49,7 @@ Format:
 }
 [/INST]`,
         parameters: {
-          max_new_tokens: 1000,
+          max_new_tokens: 2000,
           temperature: 0.7,
           return_full_text: false,
           do_sample: true
@@ -92,7 +95,7 @@ Format:
     
     // Additional validation
     for (const activity of parsed.activities) {
-      if (!activity.name || !activity.description || !activity.cost || !activity.duration || !activity.location) {
+      if (!activity.name || !activity.description || !activity.cost || !activity.duration || !activity.location || !activity.day) {
         throw new Error('Missing required fields in activity')
       }
       if (!activity.location.name || !activity.location.latitude || !activity.location.longitude) {
@@ -109,51 +112,82 @@ Format:
 
 // Mock data as fallback
 function getMockItinerary(destination: string, days: number, budget: number): Itinerary {
+  // Generate 2 activities per day
+  const activities = []
+  const baseActivities = [
+    {
+      name: "Morning City Tour",
+      description: "Explore the city highlights with a local guide",
+      cost: 30,
+      duration: 180,
+      location: {
+        name: "City Center",
+        coordinates: {
+          lat: 48.8584,
+          lng: 2.2945
+        }
+      }
+    },
+    {
+      name: "Museum Visit",
+      description: "Discover local art and history",
+      cost: 20,
+      duration: 120,
+      location: {
+        name: "City Museum",
+        coordinates: {
+          lat: 48.8606,
+          lng: 2.3376
+        }
+      }
+    },
+    {
+      name: "Local Market Tour",
+      description: "Experience local culture and food",
+      cost: 25,
+      duration: 90,
+      location: {
+        name: "Market Square",
+        coordinates: {
+          lat: 48.8566,
+          lng: 2.3522
+        }
+      }
+    },
+    {
+      name: "Evening Entertainment",
+      description: "Enjoy local performances and nightlife",
+      cost: 40,
+      duration: 180,
+      location: {
+        name: "Entertainment District",
+        coordinates: {
+          lat: 48.8566,
+          lng: 2.3522
+        }
+      }
+    }
+  ]
+
+  // Generate activities for each day
+  for (let day = 1; day <= days; day++) {
+    // Add two activities per day, cycling through the base activities
+    for (let i = 0; i < 2; i++) {
+      const baseActivity = baseActivities[(day * 2 + i) % baseActivities.length]
+      activities.push({
+        ...baseActivity,
+        name: `Day ${day} - ${baseActivity.name}`,
+        cost: baseActivity.cost + (day * 5), // Slightly vary costs
+        duration: baseActivity.duration + (i * 30), // Slightly vary durations
+      })
+    }
+  }
+
   return {
     destination,
     days,
     budget,
-    activities: [
-      {
-        name: "Visit the Eiffel Tower",
-        description: "Explore the iconic Eiffel Tower and enjoy panoramic views of Paris",
-        cost: 25,
-        duration: 180,
-        location: {
-          name: "Eiffel Tower",
-          coordinates: {
-            lat: 48.8584,
-            lng: 2.2945
-          }
-        }
-      },
-      {
-        name: "Louvre Museum Tour",
-        description: "Discover world-famous artworks including the Mona Lisa",
-        cost: 20,
-        duration: 240,
-        location: {
-          name: "Louvre Museum",
-          coordinates: {
-            lat: 48.8606,
-            lng: 2.3376
-          }
-        }
-      },
-      {
-        name: "Seine River Cruise",
-        description: "Enjoy a scenic boat tour along the Seine River",
-        cost: 15,
-        duration: 60,
-        location: {
-          name: "Seine River",
-          coordinates: {
-            lat: 48.8566,
-            lng: 2.3522
-          }
-        }
-      }
-    ]
+    activities
   }
 }
 
@@ -170,7 +204,7 @@ export async function generateItinerary(
       const prompt = `${days}-day travel itinerary for ${destination} with a budget of $${budget}`
 
       try {
-        const response = await generateWithHuggingFace(prompt)
+        const response = await generateWithHuggingFace(prompt, days)
         const result = JSON.parse(response)
         return {
           destination,
