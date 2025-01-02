@@ -160,6 +160,7 @@ server.get<{
     return { itinerary: [] }
   }
 })
+```
 
 ## 📋 Roadmap
 
