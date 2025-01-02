@@ -1,0 +1,55 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String      @id @default(uuid())
+  email      String      @unique
+  name       String?
+  itineraries Itinerary[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Itinerary {
+  id          String     @id @default(uuid())
+  destination String
+  days        Int
+  budget      Float
+  activities  Activity[]
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Activity {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  cost        Float
+  duration    Int       // in minutes
+  itineraryId String
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id])
+  location    Location  @relation(fields: [locationId], references: [id])
+  locationId  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Location {
+  id          String     @id @default(uuid())
+  name        String
+  latitude    Float
+  longitude   Float
+  activities  Activity[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+} 

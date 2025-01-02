@@ -1,0 +1,20 @@
+{
+  "name": "ai-travel-planner",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build:packages": "pnpm --filter \"@ai-travel/*\" -r build",
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm build:packages && pnpm --filter \"./apps/*\" -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+} 

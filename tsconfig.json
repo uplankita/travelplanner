@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ai-travel/*": ["packages/*/src"]
+    }
+  },
+  "references": [
+    { "path": "packages/shared" },
+    { "path": "packages/database" },
+    { "path": "packages/ai" }
+  ]
+} 

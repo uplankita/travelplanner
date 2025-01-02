@@ -1,0 +1,47 @@
+# Dependencies
+node_modules
+.pnpm-store/
+
+# Build outputs
+dist
+build
+.next
+out
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage
+
+# Misc
+.cache
+.turbo
+.vercel
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated Prisma files
+generated/
+migrations/ 

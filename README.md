@@ -326,3 +326,18 @@ const aiMonitoring = {
   }
 }
 ```
+
+## 📁 Project Structure
+
+```
+ai-travel-planner/
+├── apps/
+│   ├── web/               # User-facing frontend
+│   ├── admin/            # Admin dashboard
+│   └── server/           # Fastify backend
+├── packages/
+│   ├── database/         # Database schemas and utilities
+│   ├── ai/              # AI service implementations
+│   └── shared/          # Shared types and utilities
+└── package.json         # Root package.json for workspaces
+```
