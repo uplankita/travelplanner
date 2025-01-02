@@ -1,343 +1,205 @@
-# AI Travel Planner 🌍✈️
+# AI Travel Planner
 
-An intelligent travel companion that creates personalized travel itineraries using AI. Simply input your destination, duration, and budget, and let our AI create the perfect travel plan for you.
+An AI-powered travel itinerary generator that creates personalized travel plans based on destination, duration, and budget.
 
-## 🎯 Features
+## Features
 
-- **AI-Powered Itinerary Generation**: Creates custom travel plans based on:
-  - Destination
-  - Number of days
-  - Budget constraints
-  - Personal preferences
-- **Smart Recommendations** for:
-  - Attractions and activities
-  - Restaurants and dining experiences
-  - Accommodation options
-  - Transportation methods
-- **Budget Optimization**: Efficiently allocates your budget across different aspects of your trip
-- **Dynamic Scheduling**: Creates time-optimized daily plans considering:
-  - Opening hours
-  - Travel time between locations
-  - Meal times
-  - Rest periods
+- 🌍 Destination-based itinerary generation
+- 💰 Budget-aware planning
+- 📅 Multi-day trip planning
+- 🖼️ High-quality location images
+- 📍 Detailed activity descriptions
+- 💾 Local storage for itinerary history
 
-## 🚀 How It Works
+## Tech Stack
 
-1. **Input Your Preferences**
-   - Choose your destination
-   - Set your travel dates
-   - Specify your budget
-   - Select interests (culture, food, adventure, etc.)
+- **Frontend**: Next.js, TypeScript, Tailwind CSS
+- **Backend**: Fastify, Node.js, TypeScript
+- **AI**: Hugging Face API (Mixtral model)
+- **Database**: Prisma with SQLite
+- **Package Manager**: pnpm
+- **Monorepo Structure**: Custom workspace setup
 
-2. **AI Processing**
-   - Multi-model approach:
-     - LLM for itinerary generation and natural language understanding
-     - BERT for preference classification
-     - Specialized models for location-based recommendations
-   - Fallback options between different AI providers
-   - Optional local model processing for privacy-focused users
-
-3. **Get Your Itinerary**
-   - Detailed day-by-day schedule
-   - Interactive maps
-   - Booking links
-   - Budget breakdown
-
-## 🛠 Getting Started
-
-### Prerequisites
-
-- Node.js (v14 or higher)
-- pnpm (Recommended package manager)
-- OpenAI API key (for AI functionality)
-
-### Installation
-
-1. Clone the repository
-
-```bash
-git clone https://github.com/yourusername/ai-travel-planner.git
-cd ai-travel-planner
-```
-
-2. Install dependencies
-
-```bash
-pnpm install
-```
-
-3. Set up environment variables
-
-```bash
-cp .env.example .env
-# Add your API keys and configuration to .env
-```
-
-## 🛠️ Tech Stack
-
-- **Frontend**: 
-  - React.js
-  - [Radix UI](https://www.radix-ui.com/) for accessible component primitives
-  - TailwindCSS for styling
-- **Backend**: 
-  - [Fastify](https://www.fastify.io/) for high-performance server
-    - Type-safe schemas with TypeScript
-    - Built-in validation via JSON Schema
-    - Highly extensible plugin system
-- **Database**: MongoDB
-- **Authentication**: JWT, Auth0
-- **Maps**: Google Maps API
-- **AI Integration**: 
-  - Primary Models:
-    - Anthropic Claude (primary for itinerary generation)
-    - OpenAI GPT-4 (fallback)
-    - Google PaLM API (specialized tasks)
-  - Supporting Models:
-    - Hugging Face Models
-      - BERT for preference classification
-      - T5 for structured data generation
-    - Local LLMs for privacy-focused features
-      - LLaMA 2
-      - Mistral AI
-      - Falcon
-  - Custom Fine-tuned Models:
-    - Travel domain specialization
-    - Multi-lingual support
-    - Location-aware recommendations
-
-## 💻 Development
-
-### Frontend
-Quick start with Radix UI components:
-
-```tsx
-import '@radix-ui/themes/styles.css';
-import { Theme, Button } from '@radix-ui/themes';
-
-export default function App() {
-  return (
-    <Theme>
-      <Button>Start Planning ✈️</Button>
-    </Theme>
-  );
-}
-```
-
-### Backend
-Example Fastify route:
-
-```typescript
-import fastify from 'fastify'
-
-const server = fastify()
-
-interface IItineraryQuery {
-  destination: string
-  days: number
-  budget: number
-}
-
-// Schema for request validation
-const itinerarySchema = {
-  querystring: {
-    type: 'object',
-    properties: {
-      destination: { type: 'string' },
-      days: { type: 'number' },
-      budget: { type: 'number' }
-    },
-    required: ['destination', 'days', 'budget']
-  }
-}
-
-server.get<{
-  Querystring: IItineraryQuery
-}>('/generate-itinerary', {
-  schema: itinerarySchema,
-  handler: async (request, reply) => {
-    const { destination, days, budget } = request.query
-    // AI processing logic here
-    return { itinerary: [] }
-  }
-})
-```
-
-## 📋 Roadmap
-
-- [ ] Multi-city trip planning
-- [ ] Group travel coordination
-- [ ] Real-time flight prices
-- [ ] Local transport integration
-- [ ] Travel checklist generator
-- [ ] Expense tracker
-- [ ] Offline mode
-- [ ] Multi-language support
-- [ ] Mobile app development
-- [ ] Integration with booking platforms
-- [ ] Real-time weather updates
-- [ ] Social sharing features
-
-## 🤝 Contributing
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📱 Screenshots
-
-[Coming Soon]
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## 📬 Contact
-
-Project Link: [https://github.com/yourusername/ai-travel-planner](https://github.com/yourusername/ai-travel-planner)
-
-## ⭐ Support
-
-If you find this project helpful, please give it a ⭐️!
-
-## 🤖 AI Implementation Details
-
-### Cost-Effective AI Strategy
-
-Our application uses a tiered AI approach to balance cost and performance:
-
-1. **Primary AI Models**
-   - Anthropic Claude (~$0.008/1K tokens)
-     - Main itinerary generation
-     - Long-form content processing
-   - Google PaLM API
-     - Basic queries and classifications
-     - Location-based recommendations
-   - OpenAI GPT-4 ($0.03-0.06/1K tokens)
-     - Premium features
-     - Fallback for complex requests
-
-2. **Cost Optimization Techniques**
-   ```typescript
-   // Caching Strategy
-   interface CacheConfig {
-     provider: 'Redis';
-     ttl: number;
-     keyPattern: `${destination}-${days}-${budget}`;
-   }
-
-   // Request Batching
-   interface BatchConfig {
-     maxBatchSize: 10;
-     waitTime: 100; // ms
-     similarityThreshold: 0.8;
-   }
-   ```
-
-3. **Resource Tiers**
-   ```typescript
-   const userTiers = {
-     free: {
-       requestsPerDay: 3,
-       maxTokens: 2000,
-       model: 'claude'
-     },
-     premium: {
-       requestsPerDay: 10,
-       maxTokens: 4000,
-       model: 'gpt-4'
-     }
-   }
-   ```
-
-### Performance Optimization
-
-1. **Caching Layer**
-   - Redis caching for common destinations
-   - Template-based responses for popular routes
-   - Estimated 40% reduction in API calls
-
-2. **Hybrid Processing**
-   ```typescript
-   async function smartItineraryGeneration(request: TravelRequest) {
-     // 1. Check cache
-     const cached = await cache.get(createCacheKey(request))
-     if (cached) return cached
-
-     // 2. Use basic model for initial plan
-     const basicPlan = await generateBasicPlan(request)
-
-     // 3. Enhance if needed
-     if (needsEnhancement(request)) {
-       return await enhanceWithAdvancedModel(basicPlan)
-     }
-
-     return basicPlan
-   }
-   ```
-
-### Estimated Costs
-
-| Usage Tier | Users | Daily Requests | Monthly Cost |
-|------------|-------|----------------|--------------|
-| Startup    | 100   | 50            | ~$225        |
-| Growth     | 1000  | 500           | ~$1,800      |
-| Scale      | 5000  | 2500          | ~$8,000      |
-
-### Implementation Phases
-
-1. **MVP Phase**
-   - Single AI model (Claude)
-   - Basic caching
-   - Essential features only
-
-2. **Growth Phase**
-   - Multi-model approach
-   - Advanced caching
-   - Premium features
-
-3. **Scale Phase**
-   - Custom fine-tuned models
-   - Regional optimization
-   - Enterprise features
-
-### Monitoring and Optimization
-
-```typescript
-interface AIMetrics {
-  responseTime: number;
-  tokenUsage: number;
-  cacheHitRate: number;
-  costPerRequest: number;
-  userSatisfaction: number;
-}
-
-const aiMonitoring = {
-  alertThresholds: {
-    costPerDay: 100,
-    errorRate: 0.05,
-    responseTime: 2000
-  },
-  optimization: {
-    automaticCaching: true,
-    dynamicModelSelection: true,
-    costBasedRouting: true
-  }
-}
-```
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-ai-travel-planner/
 ├── apps/
-│   ├── web/               # User-facing frontend
-│   ├── admin/            # Admin dashboard
-│   └── server/           # Fastify backend
+│   ├── web/             # Next.js frontend
+│   └── server/          # Fastify backend
 ├── packages/
-│   ├── database/         # Database schemas and utilities
-│   ├── ai/              # AI service implementations
-│   └── shared/          # Shared types and utilities
-└── package.json         # Root package.json for workspaces
+│   ├── ai/             # AI integration package
+│   ├── database/       # Prisma database package
+│   └── shared/         # Shared types and utilities
 ```
+
+## Prerequisites
+
+- Node.js (v18 or higher)
+- pnpm (v8 or higher)
+- Hugging Face API key
+
+## Setup
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd travel-planner
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   # In root directory
+   cp .env.example .env
+
+   # Configure the following variables in .env:
+   HUGGING_FACE_API_KEY=your_api_key
+   DATABASE_URL="file:./dev.db"
+   ```
+
+4. Initialize the database:
+   ```bash
+   cd packages/database
+   pnpm prisma generate
+   pnpm prisma db push
+   ```
+
+5. Build packages:
+   ```bash
+   pnpm build
+   ```
+
+6. Start the development servers:
+   ```bash
+   # Start the backend server (port 4000)
+   cd apps/server
+   pnpm dev
+
+   # In a new terminal, start the frontend (port 8000)
+   cd apps/web
+   pnpm dev
+   ```
+
+7. Open [http://localhost:8000](http://localhost:8000) in your browser.
+
+## Development
+
+### Git Workflow
+
+1. Branch naming convention:
+   - Feature: `feature/description`
+   - Bug fix: `fix/description`
+   - Refactor: `refactor/description`
+
+2. Commit message format:
+   ```
+   type(scope): description
+
+   [optional body]
+   ```
+   Types: feat, fix, docs, style, refactor, test, chore
+
+3. Before committing:
+   ```bash
+   pnpm lint
+   pnpm test
+   ```
+
+### Working with Packages
+
+- Build all packages:
+  ```bash
+  pnpm build
+  ```
+
+- Watch mode for development:
+  ```bash
+  pnpm dev
+  ```
+
+### Database Management
+
+- Create a new migration:
+  ```bash
+  cd packages/database
+  pnpm prisma migrate dev
+  ```
+
+- Reset database:
+  ```bash
+  pnpm prisma migrate reset
+  ```
+
+## File Structure Details
+
+### Frontend (`apps/web`)
+```
+├── app/              # Next.js app directory
+├── components/       # React components
+├── public/          # Static assets
+└── styles/          # CSS styles
+```
+
+### Backend (`apps/server`)
+```
+├── src/
+│   ├── routes/      # API routes
+│   ├── plugins/     # Fastify plugins
+│   └── index.ts     # Server entry point
+```
+
+### Shared Package
+```
+├── src/
+│   ├── types/       # Shared TypeScript types
+│   └── landmarks.ts # Image mapping utilities
+```
+
+## Environment Variables
+
+```env
+# Backend
+PORT=4000
+DATABASE_URL="file:./dev.db"
+HUGGING_FACE_API_KEY=your_api_key
+CORS_ORIGIN=http://localhost:8000
+
+# Frontend
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
+
+## Git Ignore Rules
+
+The project includes specific `.gitignore` files for different components:
+
+### Root `.gitignore`
+```
+node_modules/
+.env
+.env.*
+!.env.example
+```
+
+### Package-specific `.gitignore`
+```
+dist/
+*.tsbuildinfo
+node_modules/
+.env
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+MIT License - see LICENSE file for details
